@@ -3,6 +3,7 @@ import { LOAD_ITEMS, REMOVE_ITEM, ADD_ITEM } from './items';
 const LOAD = 'pokemon/LOAD';
 const LOAD_TYPES = 'pokemon/LOAD_TYPES';
 const ADD_ONE = 'pokemon/ADD_ONE';
+const UPDATE = 'pokemon/UPDATE'
 
 const load = list => ({
   type: LOAD,
@@ -19,6 +20,13 @@ const addOnePokemon = pokemon => ({
   pokemon
 });
 
+const editOnePokemon = pokemon => {
+  return {
+    type: UPDATE,
+    pokemon
+  }
+}
+
 export const getPokemon = () => async dispatch => {
   const response = await fetch(`/api/pokemon`);
 
@@ -28,6 +36,32 @@ export const getPokemon = () => async dispatch => {
   }
 };
 
+export const getOnePokemon = (id) => async dispatch => {
+  const response = await fetch (`/api/pokemon/${id}`)
+
+  if (response.ok) {
+    const pokemon = await response.json();
+    dispatch(addOnePokemon(pokemon))
+  }
+}
+
+export const createPokemon = (pokemon) => async dispatch => {
+  const response = await fetch ('/api/pokemon', {
+    method: 'POST',
+    body: JSON.stringify(pokemon),
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    }
+  })
+  if (response.ok) {
+    const pokemon = await response.json()
+    dispatch(addOnePokemon(pokemon))
+  }
+  return pokemon
+}
+
+
 export const getPokemonTypes = () => async dispatch => {
   const response = await fetch(`/api/pokemon/types`);
 
@@ -36,6 +70,26 @@ export const getPokemonTypes = () => async dispatch => {
     dispatch(loadTypes(types));
   }
 };
+
+export const editPokemon = (payload) => async (dispatch, getState) => {
+
+  const state = getState()
+  const id = state.pokemon.find(pokemon => pokemon.number === payload.number).id
+  const response = await fetch (`/api/pokemon/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    }
+  })
+  if (response.ok) {
+    const pokemon = await response.json()
+    dispatch(editOnePokemon(pokemon))
+  }
+  return payload
+  
+}
 
 const initialState = {
   list: [],
@@ -84,6 +138,12 @@ const pokemonReducer = (state = initialState, action) => {
           ...action.pokemon
         }
       };
+    }
+    case UPDATE: {
+      return {
+        ...state,
+        [action.pokemon.id]: action.pokemon
+      }
     }
     case LOAD_ITEMS: 
       return {
