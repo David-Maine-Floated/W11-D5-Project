@@ -3,6 +3,7 @@ export const UPDATE_ITEM = "items/UPDATE_ITEM";
 export const REMOVE_ITEM = "items/REMOVE_ITEM";
 export const ADD_ITEM = "items/ADD_ITEM";
 
+
 const load = (items, pokemonId) => ({
   type: LOAD_ITEMS,
   items,
@@ -24,6 +25,22 @@ const remove = (itemId, pokemonId) => ({
   itemId,
   pokemonId
 });
+
+export const addItem = (item, pokemonId) => async (dispatch) => {
+  const response = await fetch(`/api/items/${pokemonId}`, {
+    method: 'PUT',
+    body: JSON.stringify(item),
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    }
+  })
+
+  if(response.ok) {
+    dispatch(add(item))
+  }
+
+}
 
 
 export const getPokemonItems = (pokemonId) =>  async (dispatch) => {
