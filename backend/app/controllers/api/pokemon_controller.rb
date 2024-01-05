@@ -33,9 +33,11 @@ class Api::PokemonController < ApplicationController
   end
 
   def update
+    # debugger
     @pokemon = Pokemon.find(params[:id])
 
     @pokemon.transaction do
+      # debugger
       @pokemon.update!(pokemon_params)
       @pokemon.save_moves!(params[:moves])
       render :show

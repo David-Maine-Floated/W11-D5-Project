@@ -74,7 +74,7 @@ export const getPokemonTypes = () => async dispatch => {
 export const editPokemon = (payload) => async (dispatch, getState) => {
 
   const state = getState()
-  const id = state.pokemon.find(pokemon => pokemon.number === payload.number).id
+  const id = Object.values(state.pokemon).find(pokemon => pokemon.number === payload.number).id
   const response = await fetch (`/api/pokemon/${id}`, {
     method: 'PUT',
     body: JSON.stringify(payload),
