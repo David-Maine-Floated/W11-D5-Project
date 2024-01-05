@@ -1,3 +1,5 @@
+import { useSelector } from "react-redux";
+
 export const LOAD_ITEMS = "items/LOAD_ITEMS";
 export const UPDATE_ITEM = "items/UPDATE_ITEM";
 export const REMOVE_ITEM = "items/REMOVE_ITEM";
@@ -38,6 +40,28 @@ export const addItem = (item, pokemonId) => async (dispatch) => {
 
   if(response.ok) {
     dispatch(add(item))
+  }
+}
+
+export const removeItem = (itemId) => async (dispatch, getState) => {
+
+  const state = getState()
+  //  debugger
+  const item = state.items[itemId] 
+ 
+  const response = await fetch(`/api/items/${itemId}`,{
+    method: 'DELETE',
+    body: JSON.stringify(item),
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    }
+  })
+
+
+
+  if(response.ok) {
+    dispatch(remove(itemId, item.pokemonId ))
   }
 
 }

@@ -6,6 +6,7 @@ import EditPokemonForm from './EditPokemonForm';
 import ItemForm from './ItemForm';
 import { getOnePokemon } from '../store/pokemon';
 import { useDispatch } from 'react-redux';
+import { removeItem } from '../store/items';
 
 const PokemonDetail = () => {
   const { pokemonId } = useParams();
@@ -24,6 +25,7 @@ const PokemonDetail = () => {
   if (!pokemon) {
     return null;
   }
+
 
   let content = null;
 
